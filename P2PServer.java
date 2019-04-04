@@ -1,5 +1,17 @@
-import java.io.*;
-import java.net.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+
+import javax.imageio.ImageIO;
 
 /**
  * This program is to run the P2PServer. The P2PServer first updates and informs
@@ -10,6 +22,11 @@ import java.net.*;
  *
  */
 public class P2PServer {
+	
+	
+	 static BufferedImage bimg;
+	    byte[] bytes;
+	
 	/**
 	 * Main method for P2PServer
 	 * @param args
@@ -19,10 +36,10 @@ public class P2PServer {
 
 		String[] jpgList = { "DaveMasonDab.jpg" };
 		// Send name of jpg to Directory servers via UDP
-		InformAndUpdate("DaveMasonDab.jpg", 9877);
+		//InformAndUpdate("DaveMasonDab.jpg", 9877);
 
 		// Wait for Client to connect via TCP
-		TCPServer(jpgList, 9877);
+		TCPServer(jpgList, 9878);
 	}
 
 	/**
@@ -79,11 +96,30 @@ public class P2PServer {
 		String str = bf.readLine();
 		System.out.println("Client: " + str);
 		// Send jpb with that name
-		pr.println("I have:" + str);
-		pr.flush();
-			
-		ss.close();
-
+		//pr.println("I have:" + str);
+		//pr.flush();
+		
+		
+		//Get Jpg
+	while(true) {
+		
+		 try
+         {
+			 //Location of file on computer
+		bimg = ImageIO.read(new File("D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\DaveMasonDab.jpg"));
+		ImageIO.write(bimg,"JPG",s.getOutputStream());
+        System.out.println("Image sent!!!!");
+         }
+        catch(SocketException st)
+        {
+              System.out.println("Socket Closed!");
+             break;
+        }
+        
 	}
+       
+        ss.close();
 
+	
+	}
 }
