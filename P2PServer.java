@@ -10,6 +10,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -18,17 +20,17 @@ import javax.imageio.ImageIO;
  * the directory server of what jpg it has. It then waits for any p2pclient to
  * connect to it and request a jpg
  * 
- * @author Andrew Benon 500745614
+ * @author Andrew Benson 500745614
  *
  */
 public class P2PServer {
-	
-	
-	 static BufferedImage bimg;
-	    byte[] bytes;
-	
+
+	static BufferedImage bimg;
+	byte[] bytes;
+
 	/**
 	 * Main method for P2PServer
+	 * 
 	 * @param args
 	 * @throws Exception
 	 */
@@ -36,7 +38,7 @@ public class P2PServer {
 
 		String[] jpgList = { "DaveMasonDab.jpg" };
 		// Send name of jpg to Directory servers via UDP
-		//InformAndUpdate("DaveMasonDab.jpg", 9877);
+		// InformAndUpdate("DaveMasonDab.jpg", 9877);
 
 		// Wait for Client to connect via TCP
 		TCPServer(jpgList, 9878);
@@ -44,7 +46,8 @@ public class P2PServer {
 
 	/**
 	 * Informs and updates the directory servers of what jpg it has via udp
-	 * @param jpg the name of the jpg
+	 * 
+	 * @param jpg  the name of the jpg
 	 * @param port the port number used to connect
 	 * @throws IOException
 	 */
@@ -74,8 +77,10 @@ public class P2PServer {
 	}
 
 	/**
-	 * Waits for client to connect and request jpg. P2P server then sends jpg to client
-	 * @param jpgList 
+	 * Waits for client to connect and request jpg. P2P server then sends jpg to
+	 * client
+	 * 
+	 * @param jpgList
 	 * @param port
 	 * @throws Exception
 	 */
@@ -84,7 +89,9 @@ public class P2PServer {
 		ServerSocket ss = new ServerSocket(port);
 		// Wait for client to connect
 		System.out.println("Waiting for client to connect...");
+
 		Socket s = ss.accept();
+		s.setSoTimeout(180000);
 
 		System.out.println("Client Connected");
 
@@ -92,34 +99,41 @@ public class P2PServer {
 		InputStreamReader in = new InputStreamReader(s.getInputStream());
 		BufferedReader bf = new BufferedReader(in);
 		PrintWriter pr = new PrintWriter(s.getOutputStream());
-		// Read what client is requesting
-		String str = bf.readLine();
-		System.out.println("Client: " + str);
-		// Send jpb with that name
-		//pr.println("I have:" + str);
-		//pr.flush();
-		
-		
-		//Get Jpg
-	while(true) {
-		
-		 try
-         {
-			 //Location of file on computer
-		bimg = ImageIO.read(new File("D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\DaveMasonDab.jpg"));
-		ImageIO.write(bimg,"JPG",s.getOutputStream());
-        System.out.println("Image sent!!!!");
-         }
-        catch(SocketException st)
-        {
-              System.out.println("Socket Closed!");
-             break;
-        }
-        
-	}
-       
-        ss.close();
 
-	
+		while (true) {
+
+			try {
+
+				// Read what client is requesting
+				String str = bf.readLine();
+				System.out.println("Client: " + str);
+				// Send jpb with that name
+				// pr.println("I have:" + str);
+				// pr.flush();
+
+				// Get Jpg
+
+				// Location of file on computer
+				bimg = ImageIO.read(new File(
+						"D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\DaveMasonDab.jpg"));
+				ImageIO.write(bimg, "JPG", s.getOutputStream());
+				ImageIO.write(bimg, "JPG", s.getOutputStream());
+				System.out.println("Image sent!!!!");
+
+				s.getOutputStream().flush();
+			} catch (SocketException st) {
+				System.out.println("Socket Closed!");
+				break;
+			} catch (SocketTimeoutException st) {
+				System.out.println("Socket timed out!");
+				break;
+			} catch (Exception ex) {
+				System.out.println(ex);
+			}
+
+		}
+
+		ss.close();
+
 	}
 }
