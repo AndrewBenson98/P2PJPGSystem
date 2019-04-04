@@ -1,5 +1,14 @@
-import java.io.*;
-import java.net.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
+
+import javax.imageio.ImageIO;
 
 /**
  * This program will request a jpg from directory server. Directory server will
@@ -20,9 +29,9 @@ public class P2PClient {
 	public static void main(String[] args) throws Exception {
 
 		String jpgName = "DaveMasonDab.jpg";
-		String IPAddress = RequestJpg(jpgName, 9877);
-
-		ConnectToHost(IPAddress, jpgName, 9877);
+		//String IPAddress = RequestJpg(jpgName, 9877);
+		
+		ConnectToHost("ip here", jpgName, 9878);
 
 	}
 
@@ -90,8 +99,17 @@ public class P2PClient {
 		InputStreamReader in = new InputStreamReader(s.getInputStream());
 		BufferedReader bf = new BufferedReader(in);
 		// Read what server is sending (get jpg from server)
-		String str = bf.readLine();
-		System.out.println("Server: " + str);
+		//String str = bf.readLine();
+		//System.out.println("Server: " + str);
+		
+		
+		//Get Jpg
+		BufferedImage img=ImageIO.read(ImageIO.createImageInputStream(s.getInputStream()));
+		System.out.println("Image received!!!!"); 
+		//Location where file is to be saved
+		File f = new File("D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\DaveMasonDab1.jpg");
+        ImageIO.write(img,"jpg",f);
+		
 		s.close();
 	}
 
