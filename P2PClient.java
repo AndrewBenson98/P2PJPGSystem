@@ -29,9 +29,11 @@ public class P2PClient {
 	public static void main(String[] args) throws Exception {
 
 		String jpgName = "DaveMasonDab.jpg";
-		//String IPAddress = RequestJpg(jpgName, 9877);
+		String IPAddress = RequestJpg(jpgName, 9882);
 		
-		ConnectToHost("ip here", jpgName, 9878);
+		ConnectToHost(IPAddress, jpgName, 9883);
+		
+		//Request another picture and connect to host again
 
 	}
 
@@ -48,11 +50,11 @@ public class P2PClient {
 		// create input stream
 		// BufferedReader inFromUser = new BufferedReader(new
 		// InputStreamReader(System.in));
-
+		System.out.println("Requesting "+jpgName);
 		DatagramSocket clientSocket = new DatagramSocket();
 
-		// IPAddress goes here
-		InetAddress IPAddress = InetAddress.getByName("hostname");
+		// dirc server ip goes here
+		InetAddress IPAddress = InetAddress.getByName("127.0.0.1");
 		System.out.println(IPAddress);
 
 		byte[] sendData = new byte[1024];
@@ -75,6 +77,7 @@ public class P2PClient {
 
 		// System.out.println("FROM SERVER:" + hostIPAddress);
 		clientSocket.close();
+		System.out.println("Host IP Adress for "+jpgName +" is "+hostIPAddress);
 		return hostIPAddress;
 	}
 
@@ -86,15 +89,17 @@ public class P2PClient {
 	 * @throws Exception
 	 */
 	static void ConnectToHost(String IPAddress, String jpgName, int port) throws Exception {
-
+		
+		System.out.println("Connecting to P2P Server...");
+		IPAddress = IPAddress.substring(1);//Trim off the / 
 		// create socket and send request to p2pServer
-		Socket s = new Socket("localhost", port);
+		Socket s = new Socket(IPAddress, port);
 		// Create Print Writer
 		PrintWriter pr = new PrintWriter(s.getOutputStream());
 		// Send server the name of requested jpg
 		pr.println(jpgName);
 		pr.flush();
-
+		System.out.println("Requesting "+jpgName);
 		// Create stream reader and buffered reader
 		InputStreamReader in = new InputStreamReader(s.getInputStream());
 		BufferedReader bf = new BufferedReader(in);
@@ -107,10 +112,11 @@ public class P2PClient {
 		BufferedImage img=ImageIO.read(ImageIO.createImageInputStream(s.getInputStream()));
 		System.out.println("Image received!!!!"); 
 		//Location where file is to be saved
-		File f = new File("D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\DaveMasonDab1.jpg");
+		File f = new File("D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\A123"+jpgName);
         ImageIO.write(img,"jpg",f);
 		
 		s.close();
+		System.out.println("Client Closed");
 	}
 
 }
