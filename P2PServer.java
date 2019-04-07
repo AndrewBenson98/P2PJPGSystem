@@ -27,10 +27,11 @@ public class P2PServer {
 
 		String[] jpgList = { "DaveMasonDab.jpg" };
 		// Send name of jpg to Directory servers via UDP
-		// InformAndUpdate("DaveMasonDab.jpg", 9877);
+		 InformAndUpdate("DaveMasonDab.jpg", 9882);
+		 //Do another inform and update for a second picture
 
 		// Wait for Client to connect via TCP
-		TCPServer(jpgList, 9878);
+		TCPServer(jpgList, 9883);
 	}
 
 	/**
@@ -45,11 +46,13 @@ public class P2PServer {
 
 		// BufferedReader inFromUser = new BufferedReader(new
 		// InputStreamReader(System.in));
-
+System.out.println("Informing Directory Server...");
 		DatagramSocket clientSocket = new DatagramSocket();
 
-		InetAddress IPAddress = InetAddress.getByName("localhost");
-		System.out.println(IPAddress);
+		//change to ip of directory server
+		InetAddress IPAddress = InetAddress.getByName("127.0.0.1");
+		//InetAddress IPAddress = InetAddress.getByAddress("127.0.0.1".getBytes());
+		//System.out.println(IPAddress);
 
 		byte[] sendData = new byte[1024];
 
@@ -61,7 +64,7 @@ public class P2PServer {
 		// Create Datagram with data, length, ip addr, port
 		DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 		clientSocket.send(sendPacket);
-
+System.out.println("Directory Server Informed");
 		clientSocket.close();
 	}
 
@@ -75,6 +78,7 @@ public class P2PServer {
 	 */
 	static void TCPServer(String[] jpgList, int port) throws Exception {
 		// Create server socket
+
 		ServerSocket ss = new ServerSocket(port);
 		// Wait for client to connect
 		System.out.println("Waiting for client to connect...");
@@ -94,8 +98,8 @@ public class P2PServer {
 			try {
 
 				// Read what client is requesting
-				String str = bf.readLine();
-				System.out.println("Client: " + str);
+				String jpgName = bf.readLine();
+				System.out.println("Client: " + jpgName);
 				// Send jpb with that name
 				// pr.println("I have:" + str);
 				// pr.flush();
@@ -104,7 +108,7 @@ public class P2PServer {
 
 				// Location of file on computer
 				bimg = ImageIO.read(new File(
-						"D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\DaveMasonDab.jpg"));
+						"D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\"+jpgName));
 				ImageIO.write(bimg, "JPG", s.getOutputStream());
 				ImageIO.write(bimg, "JPG", s.getOutputStream());
 				System.out.println("Image sent!!!!");
@@ -118,11 +122,13 @@ public class P2PServer {
 				break;
 			} catch (Exception ex) {
 				System.out.println(ex);
+				break;
 			}
 
 		}
 
 		ss.close();
+		System.out.println("Server Closed");
 
 	}
 }
