@@ -28,10 +28,14 @@ public class P2PClient {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		String jpgName = "DaveMasonDab.jpg";
-		String IPAddress = RequestJpg(jpgName, 9882);
+		String jpgName = "pingu.jpg";
+		String jpgName2 = "NOOT.jpg";
 		
-		ConnectToHost(IPAddress, jpgName, 9883);
+		String IPAddress = RequestJpg(jpgName, 20170);
+		ConnectToHost(IPAddress, jpgName, 20175);
+		
+		IPAddress = RequestJpg(jpgName2, 20170);
+		ConnectToHost(IPAddress, jpgName2, 20175);
 		
 		//Request another picture and connect to host again
 
@@ -54,7 +58,7 @@ public class P2PClient {
 		DatagramSocket clientSocket = new DatagramSocket();
 
 		// dirc server ip goes here
-		InetAddress IPAddress = InetAddress.getByName("127.0.0.1");
+		InetAddress IPAddress = InetAddress.getByName("141.117.232.101");
 		System.out.println(IPAddress);
 
 		byte[] sendData = new byte[1024];
@@ -91,9 +95,11 @@ public class P2PClient {
 	static void ConnectToHost(String IPAddress, String jpgName, int port) throws Exception {
 		
 		System.out.println("Connecting to P2P Server...");
-		IPAddress = IPAddress.substring(1);//Trim off the / 
+		System.out.println(IPAddress);
+		//IPAddress = IPAddress.substring(1).trim();//Trim off the /
+		System.out.println(IPAddress+":");
 		// create socket and send request to p2pServer
-		Socket s = new Socket(IPAddress, port);
+		Socket s = new Socket("ENG202-41", port);
 		// Create Print Writer
 		PrintWriter pr = new PrintWriter(s.getOutputStream());
 		// Send server the name of requested jpg
@@ -112,7 +118,7 @@ public class P2PClient {
 		BufferedImage img=ImageIO.read(ImageIO.createImageInputStream(s.getInputStream()));
 		System.out.println("Image received!!!!"); 
 		//Location where file is to be saved
-		File f = new File("D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\A123"+jpgName);
+		File f = new File("C:\\Users\\wswong\\Desktop\\"+jpgName);
         ImageIO.write(img,"jpg",f);
 		
 		s.close();
