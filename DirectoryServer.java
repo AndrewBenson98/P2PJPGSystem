@@ -23,15 +23,15 @@ public class DirectoryServer {
 	public static void main(String[] args) throws Exception {
 
 		// Create Socket
-		DatagramSocket serverSocket = new DatagramSocket(9882);
+		DatagramSocket serverSocket = new DatagramSocket(20170);
 		Hashtable<String, String> contentList = new Hashtable<String, String>(); 
 		
 		byte[] receiveData = new byte[1024];
 		byte[] sendData = new byte[1024];
 
-		// while true, Server reads in UDP packets it receives and sends the same
-		// message back in capital letters
+
 		while (true) {
+			
 			// Create space for received datagram
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			// Wait to receive packet
@@ -42,6 +42,7 @@ public class DirectoryServer {
 			// Get the IP address of the packet you just received
 			InetAddress IPAddress = receivePacket.getAddress();
 			System.out.println(IPAddress.getHostAddress());
+			
 			// Get the port from packet
 			int port = receivePacket.getPort();
 
@@ -50,17 +51,16 @@ public class DirectoryServer {
 			// Format of data should be e.g. 0:jpg.jpg WITH colon :
 			char type = data.charAt(0);
 			String jpgName = data.substring(2).trim();
-			contentList.put(jpgName, IPAddress.toString());// idk if this is what i should do said "ARA".
+			contentList.put(jpgName, IPAddress.getHostName());// idk if this is what i should do said "ARA".
+			System.out.println("Host Name: "+IPAddress.getHostName());
 			if (type == '0') {
 				// Seach Hashtable for the value of jpgName and set sendData to be the value of
 				// that jpg's IPAddress
-			sendData = contentList.get(jpgName).getBytes();// idk if this is what i should do said "ARA".
+			sendData = contentList.get(jpgName).getBytes();
 				
 				System.out.println("Type: Request \t Finding Data for " + jpgName);
-
-				// sendData = (Get IP Address).getBytes();
+		
 				// Send the ip address back to p2pclient
-				//sendData = "127.357.362.12".getBytes();
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
 				serverSocket.send(sendPacket);
 
