@@ -25,13 +25,15 @@ public class P2PServer {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		String[] jpgList = { "DaveMasonDab.jpg" };
+		String[] jpgList = { "pingu.jpg" };
 		// Send name of jpg to Directory servers via UDP
-		 InformAndUpdate("DaveMasonDab.jpg", 9882);
+		 InformAndUpdate("pingu.jpg", 20170);
+		 InformAndUpdate("NOOT.jpg", 20170);
 		 //Do another inform and update for a second picture
 
 		// Wait for Client to connect via TCP
-		TCPServer(jpgList, 9883);
+		TCPServer(jpgList, 20175);
+		TCPServer(jpgList, 20175);
 	}
 
 	/**
@@ -50,7 +52,11 @@ System.out.println("Informing Directory Server...");
 		DatagramSocket clientSocket = new DatagramSocket();
 
 		//change to ip of directory server
-		InetAddress IPAddress = InetAddress.getByName("127.0.0.1");
+		
+//		byte [] ipAddr = new byte[]{(byte) 141,117,(byte) 232,101};
+//		InetAddress IPAddress = InetAddress.getByAddress(ipAddr);
+		InetAddress IPAddress = InetAddress.getByName("ENG202-42");
+		System.out.println(IPAddress.getHostAddress());
 		//InetAddress IPAddress = InetAddress.getByAddress("127.0.0.1".getBytes());
 		//System.out.println(IPAddress);
 
@@ -108,7 +114,7 @@ System.out.println("Directory Server Informed");
 
 				// Location of file on computer
 				bimg = ImageIO.read(new File(
-						"D:\\Users\\Andrew\\Documents\\Ryerson\\CPS706 - Networks\\ProjectImage\\"+jpgName));
+						"H:\\CPS 706\\"+jpgName));
 				ImageIO.write(bimg, "JPG", s.getOutputStream());
 				ImageIO.write(bimg, "JPG", s.getOutputStream());
 				System.out.println("Image sent!!!!");
