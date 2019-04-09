@@ -72,7 +72,7 @@ public class DirectoryServer {
 
 			} else if (type == '1') {
 				// update the hashtable with jpgName and IPAddress
-				contentList.put(jpgName, IPAddress.getHostAddress());
+				contentList.put(jpgName, IPAddress.getHostName());
 				System.out.println("Type: Inform/Update \t Data being saved ");
 				System.out.println(contentList.toString());
 			} else {
